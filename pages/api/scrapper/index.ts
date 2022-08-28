@@ -10,14 +10,17 @@ const handler = async (request: NextApiRequest, response: NextApiResponse) => {
     try {
         new URL(url)
     } catch (e) {
-        return response.status(400).json({success: false, message: "url error: " + e})
+        return response.status(400).json({success: false, url, message: "url error: " + e})
     }
 
     try {
         const results = await parseUrl(url)
         return response.status(200).json({success: true, url, results});
-    } catch (e) {
-        return response.status(400).json({success: false, message: "fetch error: " + e})
+    } catch (e: any) {
+        if (e.code === 'ENOTFOUND') {
+            return response.status(404).json({success: false, url, message: "not found"})
+        }
+        return response.status(400).json({success: false, url, message: e})
     }
 
 }

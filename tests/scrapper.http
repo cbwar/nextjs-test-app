@@ -1,0 +1,38 @@
+### Valid url
+GET http://dev.lan:3000/api/scrapper?url=https://www.google.fr
+
+> {%
+client.test("Request executed successfully", function() {
+  client.assert(response.status === 200, "Response status is not 200");
+});
+client.test("Response content-type is json", function() {
+  const type = response.contentType.mimeType;
+  client.assert(type === "application/json", "Expected 'application/json' but received '" + type + "'");
+});
+%}
+
+### Invalid url
+GET http://dev.lan:3000/api/scrapper?url=test
+
+> {%
+client.test("Request executed successfully", function() {
+  client.assert(response.status === 400, "Response status is not 400");
+});
+client.test("Response content-type is json", function() {
+  const type = response.contentType.mimeType;
+  client.assert(type === "application/json", "Expected 'application/json' but received '" + type + "'");
+});
+%}
+
+### Invalid domain
+GET http://dev.lan:3000/api/scrapper?url=http://www.dasda87.com
+
+> {%
+client.test("Request executed successfully", function() {
+  client.assert(response.status === 404, "Response status is not 404");
+});
+client.test("Response content-type is json", function() {
+  const type = response.contentType.mimeType;
+  client.assert(type === "application/json", "Expected 'application/json' but received '" + type + "'");
+});
+%}
