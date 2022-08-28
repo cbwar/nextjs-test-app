@@ -3,7 +3,7 @@ import path from "path";
 import moment from "moment";
 
 const util = require('util');
-const basePath = path.join(__dirname, 'cache')
+const cachePath = '/tmp'
 
 export interface CacheOptions {
     /**
@@ -13,7 +13,7 @@ export interface CacheOptions {
 }
 
 export async function getDataFromCache(filename: string, getData: () => Promise<string>, options: CacheOptions = {}): Promise<string> {
-    const realpath = path.join(basePath, filename)
+    const realpath = path.join(cachePath, filename)
     const fileStats = (filename: string) => util.promisify(fs.stat)(filename);
     const readFile = (filename: string) => util.promisify(fs.readFile)(filename, 'utf8');
 
