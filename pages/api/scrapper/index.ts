@@ -13,10 +13,13 @@ const handler = async (request: NextApiRequest, response: NextApiResponse) => {
         return response.status(400).json({success: false, message: "url error: " + e})
     }
 
-    const results = await parseUrl(url)
-    console.log(results)
+    try {
+        const results = await parseUrl(url)
+        return response.status(200).json({success: true, url, results});
+    } catch (e) {
+        return response.status(400).json({success: false, message: "fetch error: " + e})
+    }
 
-    return response.status(200).json({success: true, url, results});
 }
 
 export default handler
