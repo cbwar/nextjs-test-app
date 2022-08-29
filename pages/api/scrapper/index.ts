@@ -17,6 +17,8 @@ const handler = async (request: NextApiRequest, response: NextApiResponse) => {
             .json({success: false, url, message: String(err)})
     }
 
+    const type = Array.isArray(request.query.type) ? request.query.type[0] : request.query.type
+
     try {
         const results = await parseUrl(url)
         return response.status(200)
