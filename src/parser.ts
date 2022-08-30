@@ -49,14 +49,15 @@ export async function parseUrl(url: string): Promise<ParserResult[]> {
 
 
 function getAbsoluteUrl(url: string, referer: string): string {
+    const ref = new URL(referer)
+
     if (url.startsWith('//')) {
-        const ur = new URL(referer)
-        return ur.protocol + url;
+        return ref.protocol + url;
     }
     if (!url.startsWith('/')) {
         return url;
     }
-    return rtrim(referer, '/') + url
+    return `${ref.protocol}//${ref.host}${ref.port ? ':' + ref.port : ''}${ref.pathname}${url}`
 }
 
 async function getPageBody(url: string): Promise<string> {
