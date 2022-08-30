@@ -6,8 +6,8 @@ type SearchResults = {
 
 export default function SearchResults(_props: SearchResults) {
 
-    const results = [..._props.results].map((item: ParserResult) => {
-        return <div className="result">
+    const results = [..._props.results].map((item: ParserResult, index) => {
+        return <div className="result" key={index}>
             <span>Url = {item.url}</span>
             <span>Type = {item.type}</span>
         </div>
