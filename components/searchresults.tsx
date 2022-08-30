@@ -14,9 +14,10 @@ export default function SearchResults(_props: SearchResults) {
         })
         .map((item: ParserResult, index) => {
             return <div className={styles.result} key={`image_${index}`}>
-                <div className={styles.header}>{item.url}</div>
                 <div className={styles.body}>
-                    <img src={item.url} alt=""/>
+                    <a href={item.url} target="_blank">
+                        <img src={item.url} alt=""/>
+                    </a>
                 </div>
             </div>
         })
@@ -38,16 +39,21 @@ export default function SearchResults(_props: SearchResults) {
 
     return (
         <div className={styles.searchResults}>
-            {images.length === 0 && <p>No images</p>}
-            {images.length > 0 && images}
-            {links.length > 0 &&
-                <div className={styles.result} key="links">
-                    <div className={styles.header}>Links</div>
-                    <div className={styles.body}>
-                        {links}
-                    </div>
+            <div className={styles.panel}>
+                <div className={styles.panelHeader}>Images</div>
+                <div className={styles.panelBodyThumbs}>
+                    {images.length === 0 && <p>No images</p>}
+                    {images.length > 0 && images}
                 </div>
-            }
+            </div>
+
+            {links.length > 0 && <div className={styles.panel}>
+                <div className={styles.panelHeader}>Links</div>
+                <div className={styles.panelBody}>
+                    {links}
+                </div>
+            </div>}
+
         </div>
     )
 }
