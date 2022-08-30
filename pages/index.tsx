@@ -1,10 +1,10 @@
 import type {NextPage} from 'next'
-import Head from 'next/head'
 import SearchBar from "../components/searchbar";
 import SearchResults from "../components/searchresults";
 import {useState} from "react";
 import {ParserResult} from "../src/types";
 import {scrapperApi} from "../src/api";
+import Header from "../components/header";
 
 
 const Home: NextPage = () => {
@@ -27,9 +27,7 @@ const Home: NextPage = () => {
 
     return (
         <div className="container">
-            <Head>
-                <title>NextJs test project</title>
-            </Head>
+            <Header></Header>
             <div className="main">
                 <SearchBar onSearch={runSearch} query={query}></SearchBar>
                 {searchError !== '' && <span className="error">{searchError}</span>}
