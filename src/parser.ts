@@ -1,21 +1,10 @@
 import {getDataFromCache} from "./cache";
+import {ParserResult, ResultType} from "./types";
 
 const jsdom = require("jsdom")
 const rtrim = require("rtrim")
-const fs = require('fs');
 const path = require('path');
 const crypto = require("crypto");
-
-enum ResultType {
-    Image = "image",
-    Anchor = "anchor",
-}
-
-type ParserResult = {
-    url: string
-    type: ResultType
-    referer: string
-}
 
 export async function parseUrl(url: string): Promise<ParserResult[]> {
     let results: ParserResult[] = []
