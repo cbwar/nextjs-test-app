@@ -6,30 +6,40 @@ const rtrim = require("rtrim")
 const path = require('path');
 const crypto = require("crypto");
 
-export async function parseUrl(url: string): Promise<ParserResult[]> {
-    let results: ParserResult[] = []
+export async function parseUrl(pageUrl: string): Promise<ParserResult[]> {
 
-    const html = await getPageBody(url)
+    const html = await getPageBody(pageUrl)
     const {document} = new jsdom.JSDOM(html).window
+    let results: ParserResult[] = []
 
     const isImageLink = (url: string): boolean => {
         return /\.(jpe?g|png|gif|svg)/i.test(url)
     }
 
+    const resultsContains = (url: string) => {
+        return results.find((item) => item.url === url) !== undefined
+    }
+
     const addImage = (u: string) => {
-        results.push({
-            url: getAbsoluteUrl(u, url),
-            referer: url,
-            type: ResultType.Image
-        })
+        const realUrl = getAbsoluteUrl(u, pageUrl)
+        if (!resultsContains(realUrl)) {
+            results.push({
+                url: realUrl,
+                referer: pageUrl,
+                type: ResultType.Image
+            })
+        }
     }
 
     const addLink = (u: string) => {
-        results.push({
-            url: getAbsoluteUrl(u, url),
-            referer: url,
-            type: ResultType.Anchor
-        })
+        const realUrl = getAbsoluteUrl(u, pageUrl)
+        if (!resultsContains(realUrl)) {
+            results.push({
+                url: realUrl,
+                referer: pageUrl,
+                type: ResultType.Anchor
+            })
+        }
     }
 
     // img tags
