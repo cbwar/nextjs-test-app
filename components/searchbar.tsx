@@ -1,4 +1,5 @@
 import React, {FormEvent, useState} from "react";
+import styles from '../styles/Search.module.scss'
 
 type SearchBarProps = {
     onSearch: (query: string) => void,
@@ -23,7 +24,7 @@ export default function SearchBar(_props: SearchBarProps) {
     }
 
     return (
-        <div className="searchBar">
+        <div className={styles.searchBar}>
             <form onSubmit={onSubmit}>
                 <input type="text" onInput={(e: FormEvent<HTMLInputElement>) => setQuery(e.currentTarget.value)}
                        value={query}/>

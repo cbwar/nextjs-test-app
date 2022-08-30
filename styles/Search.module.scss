@@ -1,0 +1,52 @@
+@import "variables";
+
+.searchBar {
+  margin-bottom: 10px;
+
+  form {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+
+    input {
+      display: block;
+      width: 100%;
+    }
+
+    button {
+      display: block;
+      width: 100px;
+    }
+  }
+
+}
+
+.searchResults {
+  display: flex;
+  flex-direction: column;
+
+  > .result {
+    margin-bottom: 10px;
+    padding: 5px;
+    border: 1px solid grey;
+    border-radius: 5px;
+
+    > .header {
+      font-weight: bold;
+      padding: 5px;
+      background-color: lighten($text-color, 80%);
+      margin-bottom: 10px;
+    }
+
+    > .body {
+
+    }
+
+    img {
+      max-width: 100%;
+
+    }
+  }
+
+}
+

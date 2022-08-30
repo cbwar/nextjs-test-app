@@ -1,4 +1,5 @@
 import type {NextPage} from 'next'
+import Head from 'next/head'
 import SearchBar from "../components/searchbar";
 import SearchResults from "../components/searchresults";
 import {useState} from "react";
@@ -13,20 +14,23 @@ const Home: NextPage = () => {
     const [results, setResults] = useState([] as ParserResult[])
     const [searchError, setError] = useState("")
 
-    const searchResults = async (query: string) => {
-        const json = await scrapperApi(query)
+    const runSearch = async (_query: string) => {
+        setQuery(_query)
+        const json = await scrapperApi(_query)
         setResults(json.results ?? [])
         setError(json.message ?? '')
-        if (json.success) {
-            setQuery(defaultQuery)
-        }
     }
 
     return (
-        <div>
-            <SearchBar onSearch={searchResults} query={query}></SearchBar>
-            {searchError !== '' && <span className="error"><strong>Error</strong>: {searchError}</span>}
-            {searchError === '' && <SearchResults results={results}></SearchResults>}
+        <div className="container">
+            <Head>
+                <title>NextJs test project</title>
+            </Head>
+            <div className="main">
+                <SearchBar onSearch={runSearch} query={query}></SearchBar>
+                {searchError !== '' && <span className="error">{searchError}</span>}
+                {searchError === '' && <SearchResults results={results} onUrlClick={runSearch}></SearchResults>}
+            </div>
         </div>
     )
 }
