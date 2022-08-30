@@ -1,4 +1,4 @@
-import React, {FormEvent, useState} from "react";
+import React, {FormEvent, useEffect, useState} from "react";
 import styles from '../styles/Search.module.scss'
 
 type SearchBarProps = {
@@ -15,7 +15,13 @@ export default function SearchBar(_props: SearchBarProps) {
         }
     }, _props)
 
-    const [query, setQuery] = useState(props.query ?? "")
+    const [query, setQuery] = useState("")
+
+    useEffect(() => {
+        console.log({prop: props.query, query})
+        setQuery(props.query ?? "")
+        console.log('component updated ' + props.query)
+    }, [_props.query]);
 
     const onSubmit = (e: FormEvent) => {
         e.preventDefault()

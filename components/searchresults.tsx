@@ -20,6 +20,7 @@ export default function SearchResults(_props: SearchResults) {
                 </div>
             </div>
         })
+    console.log(`${images.length} images found`)
 
     const links = [..._props.results]
         .filter((item: ParserResult) => {
@@ -33,6 +34,7 @@ export default function SearchResults(_props: SearchResults) {
                 }}>{item.url}</a>
             </div>
         })
+    console.log(`${links.length} links found`)
 
     return (
         <div className={styles.searchResults}>

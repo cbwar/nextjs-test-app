@@ -5,6 +5,8 @@ import {validateUrl} from "../../../src/utils";
 const handler = async (request: NextApiRequest, response: NextApiResponse) => {
 
     const url = Array.isArray(request.query.url) ? request.query.url[0] : request.query.url
+    console.log({url})
+
     if (url === undefined) {
         return response.status(400).json({success: false, message: "url is required"})
     }
@@ -20,12 +22,14 @@ const handler = async (request: NextApiRequest, response: NextApiResponse) => {
         return response.status(200)
             .json({success: true, url, results});
     } catch (e: any) {
+        console.log(String(e))
         if (e.code === 'ENOTFOUND') {
             return response.status(404)
                 .json({success: false, url, message: "not found"})
         }
-        return response.status(400)
-            .json({success: false, url, message: e})
+        return response
+            .status(400)
+            .json({success: false, url, message: String(e)})
     }
 
 }
