@@ -1,5 +1,6 @@
 import {NextApiRequest, NextApiResponse} from "next";
 import {parseUrl} from "../../../src/parser";
+import {validateUrl} from "../../../src/utils";
 
 const handler = async (request: NextApiRequest, response: NextApiResponse) => {
 
@@ -8,10 +9,10 @@ const handler = async (request: NextApiRequest, response: NextApiResponse) => {
         return response.status(400).json({success: false, message: "url is required"})
     }
     try {
-        new URL(url)
-    } catch (e) {
+        validateUrl(url, true)
+    } catch (err) {
         return response.status(400)
-            .json({success: false, url, message: "url error: " + e})
+            .json({success: false, url, message: String(err)})
     }
 
     try {
