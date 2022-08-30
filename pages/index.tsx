@@ -15,6 +15,7 @@ const Home: NextPage = () => {
     const [searchError, setError] = useState("")
 
     const runSearch = async (_query: string) => {
+        window.scrollTo(0,0);
         setQuery(_query)
         const json = await scrapperApi(_query)
         setResults(json.results ?? [])
