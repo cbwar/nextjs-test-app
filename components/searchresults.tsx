@@ -13,7 +13,7 @@ export default function SearchResults(_props: SearchResults) {
             return item.type === ResultType.Image
         })
         .map((item: ParserResult, index) => {
-            return <div className={styles.result} key={index}>
+            return <div className={styles.result} key={`image_${index}`}>
                 <div className={styles.header}>{item.url}</div>
                 <div className={styles.body}>
                     <img src={item.url} alt=""/>
@@ -26,7 +26,7 @@ export default function SearchResults(_props: SearchResults) {
             return item.type === ResultType.Anchor
         })
         .map((item: ParserResult, index) => {
-            return <div>
+            return <div key={`link_${index}`}>
                 <a href="#" onClick={(e) => {
                     e.preventDefault()
                     _props.onUrlClick(item.url)
