@@ -6,22 +6,14 @@ type SearchBarProps = {
     query?: string
 }
 
-export default function SearchBar(_props: SearchBarProps) {
-
-    // default props
-    const props: SearchBarProps = Object.assign({}, {
-        onSearch: (query: string) => {
-            console.log('onSearch called with query=' + query)
-        }
-    }, _props)
+export default function SearchBar(props: SearchBarProps) {
 
     const [query, setQuery] = useState("")
 
     useEffect(() => {
-        console.log({prop: props.query, query})
         setQuery(props.query ?? "")
         console.log('component updated ' + props.query)
-    }, [_props.query]);
+    }, [props.query]);
 
     const onSubmit = (e: FormEvent) => {
         e.preventDefault()

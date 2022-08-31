@@ -1,6 +1,7 @@
 import {ParserResult, ResultType} from "../src/types";
 import styles from '../styles/Search.module.scss'
 import Loader from "./loader";
+import Image from "next/image";
 
 type SearchResults = {
     loading?: boolean
@@ -18,12 +19,16 @@ export default function SearchResults(_props: SearchResults) {
             return item.type === ResultType.Image
         })
         .map((item: ParserResult, index) => {
-            return <div className={styles.result} key={`image_${index}`}>
-                <div className={styles.body}>
-                    <a href={item.url} target="_blank">
-                        <img src={item.url} alt=""/>
-                    </a>
-                </div>
+            return <div key={`image_${index}`} style={{position: "relative"}}>
+                <a href={item.url} target="_blank" rel="noreferrer">
+                    <Image src={`/api/scrapper/image?url=${encodeURIComponent(item.url)}`}
+                           alt=""
+                           layout="fill"
+                           objectFit="contain"
+                           placeholder="blur"
+                           blurDataURL="/noimage.png"
+                    />
+                </a>
             </div>
         })
     console.log(`${images.length} images found`)

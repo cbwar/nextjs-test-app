@@ -47,6 +47,7 @@
   justify-content: center;
 
   > div {
+    height: 150px;
     width: 150px;
     margin-right: 10px;
     margin-bottom: 10px;
@@ -56,10 +57,6 @@
     &:hover {
       border: 1px solid lighten($text-color, 80%) !important;
       background-color: darken($background-color, 5%) !important;
-    }
-
-    img {
-      width: 100%
     }
   }
 }
