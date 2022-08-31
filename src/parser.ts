@@ -1,42 +1,56 @@
 import {getDataFromCache} from "./cache";
+import {ParserResult, ResultType} from "./types";
 
 const jsdom = require("jsdom")
 const rtrim = require("rtrim")
-const fs = require('fs');
 const path = require('path');
 const crypto = require("crypto");
 
-enum ResultType {
-    Image = "image",
-    Anchor = "anchor",
-}
+export async function parseUrl(pageUrl: string): Promise<ParserResult[]> {
 
-type ParserResult = {
-    url: string
-    type: ResultType
-    referer: string
-}
-
-export async function parseUrl(url: string): Promise<ParserResult[]> {
+    const html = await getPageBody(pageUrl)
+    const {document} = new jsdom.JSDOM(html).window
     let results: ParserResult[] = []
 
-    const html = await getPageBody(url)
-    const {document} = new jsdom.JSDOM(html).window
+    const isImageLink = (url: string): boolean => {
+        return /\.(jpe?g|png|gif|svg)/i.test(url)
+    }
 
-    // Find images
+    const resultsContains = (url: string) => {
+        return results.find((item) => item.url === url) !== undefined
+    }
+
+    const addImage = (u: string) => {
+        const realUrl = getAbsoluteUrl(u, pageUrl)
+        if (!resultsContains(realUrl)) {
+            results.push({
+                url: realUrl,
+                referer: pageUrl,
+                type: ResultType.Image
+            })
+        }
+    }
+
+    const addLink = (u: string) => {
+        const realUrl = getAbsoluteUrl(u, pageUrl)
+        if (!resultsContains(realUrl)) {
+            results.push({
+                url: realUrl,
+                referer: pageUrl,
+                type: ResultType.Anchor
+            })
+        }
+    }
+
+    // img tags
     document.querySelectorAll('img').forEach((el: HTMLImageElement) => {
         if (el.src === '') {
             return
         }
-        console.log('image found: ' + el.src)
-        results.push({
-            url: getAbsoluteUrl(el.src, url),
-            referer: url,
-            type: ResultType.Image
-        })
+        addImage(el.src)
     })
 
-    // Find links
+    // a tags
     document.querySelectorAll('a').forEach((el: HTMLAnchorElement) => {
         if (el.href === '') {
             return
@@ -47,27 +61,48 @@ export async function parseUrl(url: string): Promise<ParserResult[]> {
         if (el.href.startsWith('javascript:')) {
             return
         }
-        console.log('href found: ' + el.href)
-        results.push({
-            url: getAbsoluteUrl(el.href, url),
-            referer: url,
-            type: ResultType.Anchor
-        })
+        if (isImageLink(el.href)) {
+            addImage(el.href)
+        } else {
+            addLink(el.href)
+        }
     })
 
+    // style="background-image: url(
+    document.querySelectorAll('[style]').forEach((el: HTMLElement) => {
+        const bg = el.style.backgroundImage
+        const regex = /^url\(["']?([^"'\)]+)["']?\)$/i
+        if (bg !== '') {
+            const match = bg.match(regex)
+            if (match) {
+                addImage(match[1])
+            }
+        }
+    })
     return results
 }
 
 
 function getAbsoluteUrl(url: string, referer: string): string {
+    const ref = new URL(referer)
+
     if (url.startsWith('//')) {
-        const ur = new URL(referer)
-        return ur.protocol + url;
+        return ref.protocol + url;
     }
-    if (!url.startsWith('/')) {
-        return url;
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+        return url
     }
-    return rtrim(referer, '/') + url
+    if (url.startsWith('data:')) {
+        return url
+    }
+    if (url.startsWith('/')) {
+        return ref.origin + url
+    }
+    // remove current filename from url, check if file extension is present
+    if (/\.\w{1,4}$/i.test(ref.pathname)) {
+        return ref.origin + path.dirname(ref.pathname) + '/' + url
+    }
+    return ref.origin + ref.pathname + '/' + url
 }
 
 async function getPageBody(url: string): Promise<string> {

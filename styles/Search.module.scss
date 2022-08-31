@@ -1,0 +1,70 @@
+@import "variables";
+
+.searchBar {
+  margin-bottom: 10px;
+
+  form {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+
+    input {
+      display: block;
+      width: 100%;
+    }
+
+    button {
+      display: block;
+      width: 100px;
+    }
+  }
+
+}
+
+.panel {
+  margin-bottom: 10px;
+  padding: 2px;
+  border: 1px solid grey;
+  border-radius: 5px;
+}
+
+.panelHeader {
+  font-weight: bold;
+  padding: 5px;
+  background-color: lighten($text-color, 80%);
+  margin-bottom: 10px;
+}
+
+.panelBody {
+  padding: 5px;
+}
+
+.panelBodyThumbs {
+  padding: 5px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+
+  > div {
+    height: 150px;
+    width: 150px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    border: 1px solid lighten($text-color, 95%);
+    background-color: inherit;
+
+    &:hover {
+      border: 1px solid lighten($text-color, 80%) !important;
+      background-color: darken($background-color, 5%) !important;
+    }
+  }
+}
+
+.searchResults {
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: center;
+  width: 100%;
+}
+

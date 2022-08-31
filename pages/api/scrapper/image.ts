@@ -1,12 +1,8 @@
 import {NextApiRequest, NextApiResponse} from "next";
-import {parseUrl} from "../../../src/parser";
 import {validateUrl} from "../../../src/utils";
 
 const handler = async (request: NextApiRequest, response: NextApiResponse) => {
-
     const url = Array.isArray(request.query.url) ? request.query.url[0] : request.query.url
-    console.log({url})
-
     if (url === undefined) {
         return response.status(400).json({success: false, message: "url is required"})
     }
@@ -17,21 +13,18 @@ const handler = async (request: NextApiRequest, response: NextApiResponse) => {
             .json({success: false, url, message: String(err)})
     }
 
+    console.log('downloading image ' + url + ' ...')
+
     try {
-        const results = await parseUrl(url)
-        return response.status(200)
-            .json({success: true, url, results});
-    } catch (e: any) {
-        console.log(String(e))
-        if (e.code === 'ENOTFOUND') {
-            return response.status(404)
-                .json({success: false, url, message: "not found"})
-        }
+        const res = await fetch(url)
         return response
-            .status(400)
-            .json({success: false, url, message: String(e)})
+            .status(200)
+            .send(res.body)
+    } catch (err) {
+        console.log('error: ' + String(err))
+        return response
+            .status(200)
+            .send('')
     }
-
 }
-
 export default handler
