@@ -44,7 +44,7 @@ describe('getDataFromCache', () => {
     test('cache file expired', async () => {
         const cacheFile = `${process.cwd()}/test/cachefile_3`
         expect(fs.existsSync(cacheFile)).toBe(true)
-        await sleep(1000)
+        await sleep(1100)
         const data = await getDataFromCache('test/cachefile_3', async () => "test2", {
             expire: 1,
             basedir: process.cwd()

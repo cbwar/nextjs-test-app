@@ -1,8 +1,9 @@
 import {getDataFromCache} from "./cache";
 import {ParserResult, ResultType} from "./types";
+import fetch from 'node-fetch'
 
+const rtrim = require('rtrim')
 const jsdom = require("jsdom")
-const rtrim = require("rtrim")
 const path = require('path');
 const crypto = require("crypto");
 
@@ -83,7 +84,7 @@ export async function parseUrl(pageUrl: string): Promise<ParserResult[]> {
 }
 
 
-function getAbsoluteUrl(url: string, referer: string): string {
+export function getAbsoluteUrl(url: string, referer: string): string {
     const ref = new URL(referer)
 
     if (url.startsWith('//')) {
@@ -102,20 +103,26 @@ function getAbsoluteUrl(url: string, referer: string): string {
     if (/\.\w{1,4}$/i.test(ref.pathname)) {
         return ref.origin + path.dirname(ref.pathname) + '/' + url
     }
-    return ref.origin + ref.pathname + '/' + url
+    return ref.origin + rtrim(ref.pathname, '/') + '/' + url
 }
 
-async function getPageBody(url: string): Promise<string> {
+export async function getPageBody(url: string, options: { useCache?: boolean, expire?: number } = {
+    useCache: true,
+    expire: 300
+}): Promise<string> {
     const hash = crypto.createHmac("md5", "xxx").update(url).digest('hex');
 
-    return await getDataFromCache(path.join('pages', hash + '.html'), async () => {
+    const getData = async () => {
         process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
         const response = await fetch(url);
-        const body: string = await response.text()
         if (response.status !== 200) {
             throw new Error('Error fetching url : ' + response.statusText)
         }
-        return body
-    }, {expire: 300})
+        return await response.text()
+    }
+    if (options.useCache) {
+        return await getDataFromCache(path.join('pages', hash + '.html'), getData, {expire: options.expire ?? 300})
+    }
+    return await getData()
 }
 
