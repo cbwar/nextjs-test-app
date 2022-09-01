@@ -4,32 +4,32 @@
 name: Node.js CI
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    push:
+        branches: [ "main", "develop" ]
+    pull_request:
+        branches: [ "main" , "develop" ]
 
 jobs:
-  build:
+    build:
 
-    runs-on: ubuntu-latest
+        runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [16.x]
+        strategy:
+            matrix:
+                node-version: [ 16.x ]
 
-    steps:
-    - uses: actions/checkout@v3
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-    - uses: borales/actions-yarn@v3.0.0
-      with:
-        cmd: install
-    - uses: borales/actions-yarn@v3.0.0
-      with:
-        cmd: build      
-    - uses: borales/actions-yarn@v3.0.0
-      with:
-        cmd: test   
+        steps:
+            -   uses: actions/checkout@v3
+            -   name: Use Node.js ${{ matrix.node-version }}
+                uses: actions/setup-node@v3
+                with:
+                    node-version: ${{ matrix.node-version }}
+            -   uses: borales/actions-yarn@v3.0.0
+                with:
+                    cmd: install
+            -   uses: borales/actions-yarn@v3.0.0
+                with:
+                    cmd: build
+            -   uses: borales/actions-yarn@v3.0.0
+                with:
+                    cmd: test

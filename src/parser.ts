@@ -85,6 +85,13 @@ export async function parseUrl(pageUrl: string): Promise<ParserResult[]> {
 
 
 export function getAbsoluteUrl(url: string, referer: string): string {
+
+    const trim = (str: string) => {
+        str = str.replace(/\/+$/, '')
+        str = str.replace(/^\/+/, '')
+        return str
+    }
+
     const ref = new URL(referer)
 
     if (url.startsWith('//')) {
@@ -96,14 +103,18 @@ export function getAbsoluteUrl(url: string, referer: string): string {
     if (url.startsWith('data:')) {
         return url
     }
+
+    let origin = trim(ref.origin)
     if (url.startsWith('/')) {
-        return ref.origin + url
+        return origin + url
     }
+
     // remove current filename from url, check if file extension is present
-    if (/\.\w{1,4}$/i.test(ref.pathname)) {
-        return ref.origin + path.dirname(ref.pathname) + '/' + url
+    let pathname = trim(ref.pathname)
+    if (/\.\w{1,4}$/i.test(pathname)) {
+        pathname = trim(path.dirname(pathname))
     }
-    return ref.origin + rtrim(ref.pathname, '/') + '/' + url
+    return origin + '/' + (pathname !== '' ? pathname + '/' : '') + url
 }
 
 export async function getPageBody(url: string, options: { useCache?: boolean, expire?: number } = {
